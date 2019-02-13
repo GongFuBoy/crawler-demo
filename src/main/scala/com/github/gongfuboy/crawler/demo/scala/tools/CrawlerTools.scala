@@ -17,14 +17,15 @@ object CrawlerTools {
   private lazy val INDEX_URL = "http://www.cninfo.com.cn/new/fulltextSearch?keyWord="
 
   def main(args: Array[String]): Unit = {
-    searchAndAnalyzeInfo("000001公司章程", "平安银行", "000001")
+    searchAndAnalyzeInfo("000001公司章程", "平安银行", "000001", chromeDriver)
   }
 
-  def analyze(sourceMap: Map[String, String]) = {
+  def analyze(sourceMap: Map[String, String], chromeDriver: ChromeDriver) = {
     sourceMap.map({
       case (companyCode, companyName) => {
         try {
-          searchAndAnalyzeInfo(s"${companyCode}公司章程", companyName, companyCode)
+//          println(s"${companyCode}-${companyName}")
+          searchAndAnalyzeInfo(s"${companyCode}公司章程", companyName, companyCode, chromeDriver)
         } catch {
           case _: Throwable => Seq.empty
         }
@@ -36,7 +37,7 @@ object CrawlerTools {
     * 搜索并且分析数据
     * @param keyword
     */
-  private def searchAndAnalyzeInfo(keyword: String, companyName: String, companyCode: String) = {
+  private def searchAndAnalyzeInfo(keyword: String, companyName: String, companyCode: String, chromeDriver: ChromeDriver) = {
     val driver = chromeDriver
     /**进行搜索, 获取*/
     driver.get(INDEX_URL + keyword)
@@ -117,10 +118,10 @@ object CrawlerTools {
   /**
     * 获取chromeDriver
     */
-  private val chromeDriver = {
+  def chromeDriver = {
     System.setProperty("webdriver.chrome.driver", "C:/Program Files (x86)/Google/Chrome/Application/chromedriver.exe")
     val chromeOptions = new ChromeOptions
-    // chromeOptions.addArguments("--headless")
+//    chromeOptions.addArguments("--headless")
     new ChromeDriver(chromeOptions)
   }
 

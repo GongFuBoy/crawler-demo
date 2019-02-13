@@ -14,9 +14,20 @@ object Main {
 
   def main(args: Array[String]): Unit = {
     val dicMap = DicTools.getDicMap
-    val companyInfoBeans = CrawlerTools.analyze(dicMap)
-    ExcelFileDownloadUtils.createHSSFWorkbook(companyInfoBeans, 1000,
-      new FileOutputStream(new File("D:\\crawler-demo-report.xls")))
+    val stringToStrings: Iterator[Map[String, String]] = dicMap.sliding(400, 400)
+    stringToStrings.zipWithIndex.foreach({
+      case (source, index) => {
+        new Thread() {
+          override def run(): Unit = {
+            val driver = CrawlerTools.chromeDriver
+            val companyInfoBeans = CrawlerTools.analyze(source, driver)
+            ExcelFileDownloadUtils.createHSSFWorkbook(companyInfoBeans, 1000,
+              new FileOutputStream(new File(s"D:\\crawler-demo-report${index}.xls")))
+//            driver.close()
+          }
+        }.start()
+      }
+    })
   }
 
 }
