@@ -23,7 +23,6 @@ object Main {
             val companyInfoBeans = CrawlerTools.analyze(source, driver)
             ExcelFileDownloadUtils.createHSSFWorkbook(companyInfoBeans, 1000,
               new FileOutputStream(new File(s"D:\\crawler-demo-report${index}.xls")))
-//            driver.close()
           }
         }.start()
       }
